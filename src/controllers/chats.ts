@@ -1,31 +1,67 @@
 import type { Request, Response } from 'express';
+import Chat from '../models/chat.js';
+import Message from '../models/message.js';
 
-export const listUserChats = (req: Request, res: Response): void => {
+
+export const getChats = async(req: Request, res: Response): Promise<void> => {
+  
+  const userId = req.user!.userId;
+
+  const chats = await Chat.find({ userId });
+  
   res.status(200).json({
     success: true,
     data: {
-
+     chats
     },
     error: null
   });
 };
 
-export const createChat = (req: Request, res: Response): void => {
+export const createChat =  async (req: Request, res: Response): Promise<void> => {
+  const title = req.body.title;
+  const userId = req.user!.userId;
+
+  if (!title) {
+    res.status(400).json({
+     success: false,
+    data: null,
+      error: { message: 'Title is missing' },
+    })
+
+  return;
+  }
+  
+   const chat = await Chat.create({ title, userId});
   res.status(201).json({
     success: true,
     data: {
-
+    chat
     },
     error: null
   });
 };
 
-export const fetchChat = (req: Request, res: Response): void => {
-  const { id } = req.params; 
-    res.status(200).json({
+export const getChat = async (req: Request, res: Response): Promise<void> => {
+  const userId = req.user!.userId
+
+  const chat = await Chat.findOne({ _id: req.params.id, userId });
+    
+  if (!chat) {
+    res.status(404).json({
+      success: false,
+      data: null,
+      error: { message: 'Chat not found' },
+    });
+    return;
+  }
+
+  const messages = await Message.find({ chatId: chat._id });
+    
+  res.status(200).json({
     success: true,
     data: {
-
+      chat, messages
     },
     error: null
   });
@@ -34,16 +70,4 @@ export const fetchChat = (req: Request, res: Response): void => {
 export const deleteChat = (req: Request, res: Response): void => {
   const { id } = req.params; 
    res.status(204).send();
-};
-
-export const sendMessage = (req: Request, res: Response): void => {
-  const { id } = req.params; 
-  const { text } = req.body;
-   res.status(201).json({
-    success: true,
-    data: {
-     text
-    },
-    error: null
-  });
 };
