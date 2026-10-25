@@ -11,9 +11,7 @@ export const getChats = async(req: Request, res: Response): Promise<void> => {
   
   res.status(200).json({
     success: true,
-    data: {
-     chats
-    },
+    data: chats,
     error: null
   });
 };
@@ -35,9 +33,7 @@ export const createChat =  async (req: Request, res: Response): Promise<void> =>
    const chat = await Chat.create({ title, userId});
   res.status(201).json({
     success: true,
-    data: {
-    chat
-    },
+    data: chat,
     error: null
   });
 };
@@ -56,7 +52,7 @@ export const getChat = async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  const messages = await Message.find({ chatId: chat._id });
+  const messages = await Message.find({ chatId: chat._id }).sort({createdAt: 1});
     
   res.status(200).json({
     success: true,

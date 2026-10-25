@@ -55,9 +55,7 @@ export const getDocuments = async(req: Request, res: Response): Promise<void> =>
   const documents = await Document.find({ userId });
   res.status(200).json({
     success: true,
-    data: {
-      documents
-    },
+    data: documents,
     error: null
   });
 };
