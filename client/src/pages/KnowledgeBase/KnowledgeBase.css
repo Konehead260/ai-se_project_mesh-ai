@@ -1,0 +1,121 @@
+.knowledge-base__page {
+  width: min(670px, calc(100% - 32px));
+  min-height: 439px;
+  margin: 72px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: #1c1c1c;
+}
+
+.knowledge-base__header {
+  font-family: "Space Grotesk", "Work Sans", Arial, Helvetica, sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+
+.knowledge-base__content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.knowledge-base__content > p {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.knowledge-base__content .upload-area {
+  width: 100%;
+}
+
+.library {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.file-upload__div {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  color: #1c1c1c;
+}
+
+.file-upload__text {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: min(216px, 100%);
+  height: 44px;
+  padding: 0 8px 0 12px;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: #1c1c1c0d;
+  font-size: 14px;
+}
+
+.file-upload__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-upload__remove {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  place-items: center;
+  border-radius: 8px;
+}
+
+.file-upload__remove:focus-visible,
+.save-btn:focus-visible {
+  outline: 2px solid #8165d5;
+  outline-offset: 2px;
+}
+
+.file-upload__remove:hover {
+  background-color: #1c1c1c0d;
+}
+
+.file-upload__remove img {
+  width: 16px;
+  height: 16px;
+}
+
+.knowledge-base__status {
+  color: #1c1c1c80;
+  font-size: 14px;
+}
+
+.save-btn {
+  align-self: flex-end;
+  width: 74px;
+  height: 44px;
+  border-radius: 8px;
+  background-color: #1c1c1c;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.save-btn:hover {
+  background-color: #343434;
+}
+
+@media (max-width: 480px) {
+  .knowledge-base__page {
+    margin-block: 40px;
+    gap: 20px;
+  }
+
+  .knowledge-base__header {
+    font-size: 24px;
+  }
+}

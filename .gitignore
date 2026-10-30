@@ -15,6 +15,6 @@ uploads
 .DS_Store
 .idea
 .vscode
-
+.vite
 # Secrets
 .env
