@@ -6,9 +6,11 @@
   flex-direction: column;
   gap: 24px;
   color: #1c1c1c;
+  font-family: "Work Sans", Arial, Helvetica, sans-serif;
 }
 
 .knowledge-base__header {
+  text-align: left;
   font-family: "Space Grotesk", "Work Sans", Arial, Helvetica, sans-serif;
   font-size: 28px;
   font-weight: 600;
@@ -74,14 +76,9 @@
   border-radius: 8px;
 }
 
-.file-upload__remove:focus-visible,
 .save-btn:focus-visible {
   outline: 2px solid #8165d5;
   outline-offset: 2px;
-}
-
-.file-upload__remove:hover {
-  background-color: #1c1c1c0d;
 }
 
 .file-upload__remove img {
@@ -95,7 +92,7 @@
 }
 
 .save-btn {
-  align-self: flex-end;
+  align-self: flex-start;
   width: 74px;
   height: 44px;
   border-radius: 8px;

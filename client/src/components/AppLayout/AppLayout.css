@@ -1,0 +1,15 @@
+.app-layout__backdrop {
+  display: none;
+}
+
+@media (max-width: 1200px) {
+  .app-layout__backdrop {
+    position: fixed;
+    z-index: 99;
+    top: 56px;
+    inset-inline: 0;
+    bottom: 0;
+    display: block;
+    background-color: rgb(0 0 0 / 30%);
+  }
+}
