@@ -210,13 +210,23 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       to start the conversation
     </h1>
 
-    <form className="chat__composer">
+    <form
+      className="chat__composer"
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSend();
+      }}
+    >
       <textarea
         className="chat__composer-input"
         placeholder="Ask any question"
         aria-label="Ask a question"
+        value={input}
+         onChange={(e) => setInput(e.target.value)}
+         onKeyDown={handleKeyDown}
+         disabled={isSending}
       />
-      <button type="button" aria-label="Send question">
+      <button type="submit" aria-label="Send question" disabled={isSending}>
         <svg
           width="16"
           height="16"
