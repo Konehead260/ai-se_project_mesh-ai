@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import Document from '../models/document.js';
 import { chunkText } from '../utils/chunk.js';
-import { readFileSync } from 'fs';
+import { readFileSync, unlinkSync } from 'fs';
 import { PDFParse } from 'pdf-parse';
 import Chunk from '../models/chunk.js';
 import { createEmbedding } from '../utils/embeddings.js';
@@ -18,6 +18,17 @@ export const uploadDocument = async (req: Request, res: Response) => {
 
    // Parse the file
   const buffer = readFileSync(req.file.path);
+   const pdfHeaderOffset = buffer.indexOf('%PDF-');
+   if (pdfHeaderOffset < 0 || pdfHeaderOffset > 1024) {
+     unlinkSync(req.file.path);
+     res.status(400).json({
+       success: false,
+       data: null,
+       error: { message: 'Only valid PDF files are allowed' },
+     });
+     return;
+   }
+
   const parser = new PDFParse({ data: buffer });
   const { text } = await parser.getText();
   

@@ -1,5 +1,5 @@
 import "./Chat.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getChat, getChats, type Message, createChat, type Chat, sendMessage} from "../../utils/api";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
@@ -24,6 +24,11 @@ export default function Chat() {
     const [input, setInput] = useState<string>("");
     const [isSending, setIsSending] = useState<boolean>(false);
     const { isMobileMenuOpen, setIsMobileMenuOpen } = useOutletContext<MobileContext>();
+    const messagesEndRef = useRef<HTMLLIElement>(null);
+
+  useEffect(() => {
+  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+}, [messages]);
 
     useEffect(() => {
   // 1. If activeChatId isn't set, return early
@@ -111,10 +116,13 @@ const handleSend = async () => {
 setIsSending(true);
 
  try {
-   const res = await sendMessage(activeChatId, text);
-   if (res.data) {
-     setMessages((prev) => [...prev, res.data!]);
-   }
+    const res = await sendMessage(activeChatId, text);
+    if (res.data) {
+    setMessages((prev) => [
+        ...prev.filter((m) => m._id !== userMessage._id),
+        ...res.data!,
+    ]);
+    }
  } catch {
    // 2. Append an error Message to the thread (role: 'assistant', content: 'Something went wrong. Please try again.')
    // Use Date.now().toString() for the _id and new Date().toISOString() for createdAt
@@ -277,6 +285,12 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
           )}
         </li>
       ))}
+      {isSending && (
+  <li className="chat__message chat__message_assistant chat__message_thinking">
+    Thinking…
+  </li>
+)}
+<li ref={messagesEndRef} />
     </ul>
     <div className="chat__input-bar">
       <textarea

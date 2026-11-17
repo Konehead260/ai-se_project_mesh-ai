@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { getClient, LLM_MODEL, buildContext } from '../utils/openai-client.js';
+import { getClient, LLM_MODEL, buildContext, stripThinking } from '../utils/openai-client.js';
 import Document from '../models/document.js';
 import Chunk from '../models/chunk.js';
 import { createEmbedding } from '../utils/embeddings.js';
@@ -49,9 +49,11 @@ export const sendQuestion = async (req: Request, res: Response) => {
   ],
 });
 
+const answer = stripThinking(completion.choices[0]!.message.content ?? '') || 'No answer returned.';
+
 res.status(200).json({
     success: true,
-    data: { question, answer: completion.choices[0]?.message.content },
+    data: { question, answer: answer },
     error: null,
   });
 

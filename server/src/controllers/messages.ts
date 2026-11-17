@@ -5,7 +5,7 @@ import Chunk from '../models/chunk.js';
 import Document from '../models/document.js';
 import Message from '../models/message.js';
 import { createEmbedding } from '../utils/embeddings.js';
-import { buildContext, getClient, LLM_MODEL } from '../utils/openai-client.js';
+import { buildContext, getClient, LLM_MODEL, stripThinking } from '../utils/openai-client.js';
 import { rankBySimilarity } from '../utils/vector-search.js';
 
 
@@ -59,7 +59,7 @@ export const createMessage = async (req: Request, res: Response): Promise<void> 
       { role: 'user', content: `context: ${context}\n\nQuestion: ${question}` },
     ],
   });
-  const answer = completion.choices[0]?.message.content;
+  const answer = stripThinking(completion.choices[0]!.message.content ?? '') || 'No answer returned.';
 
   if (typeof answer !== 'string') {
     throw new Error('The language model did not return an answer');

@@ -76,11 +76,6 @@
   border-radius: 8px;
 }
 
-.save-btn:focus-visible {
-  outline: 2px solid #8165d5;
-  outline-offset: 2px;
-}
-
 .file-upload__remove img {
   width: 16px;
   height: 16px;
@@ -89,21 +84,6 @@
 .knowledge-base__status {
   color: #1c1c1c80;
   font-size: 14px;
-}
-
-.save-btn {
-  align-self: flex-start;
-  width: 74px;
-  height: 44px;
-  border-radius: 8px;
-  background-color: #1c1c1c;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.save-btn:hover {
-  background-color: #343434;
 }
 
 @media (max-width: 480px) {

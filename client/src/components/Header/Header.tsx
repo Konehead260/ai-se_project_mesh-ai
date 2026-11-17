@@ -1,5 +1,7 @@
 import "./Header.css";
-import { NavLink } from "react-router-dom";
+import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import logo from "../../assets/Logo.svg";
 
 type Props = {
@@ -15,6 +17,21 @@ function getNavLinkClass({ isActive }: { isActive: boolean }) {
 }
 
 function Header({ onMenuOpen, onMenuClose, isMobileMenuOpen }: Props) {
+  const { isAuthenticated, currentUser, logout } = useAuth();
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  function closeMenus() {
+    onMenuClose();
+    setIsAccountMenuOpen(false);
+  }
+
+  function handleLogout() {
+    logout();
+    closeMenus();
+    navigate("/login");
+  }
+
   return (
     <header className={isMobileMenuOpen ? 'header header_mobile' : 'header'}>
       <img className="header__logo" src={logo} alt="Mesh AI" />
@@ -40,12 +57,41 @@ function Header({ onMenuOpen, onMenuClose, isMobileMenuOpen }: Props) {
         </svg>
       </button>
       <nav className={isMobileMenuOpen ? 'header__nav header__nav_mobile' : 'header__nav'} aria-label="Main navigation">
-        <NavLink to="/knowledge" onClick={onMenuClose} className={getNavLinkClass}>
-          Knowledge Base
-        </NavLink>
-        <NavLink to="/chat" onClick={onMenuClose} className={getNavLinkClass}>
-          Chat
-        </NavLink>
+        {isAuthenticated && (
+          <>
+            <NavLink to="/knowledge" onClick={closeMenus} className={getNavLinkClass}>
+              Knowledge Base
+            </NavLink>
+            <NavLink to="/chat" onClick={closeMenus} className={getNavLinkClass}>
+              Chat
+            </NavLink>
+            <div className="header__account">
+              <button
+                type="button"
+                className="header__dropdown-btn"
+                aria-haspopup="menu"
+                aria-expanded={isAccountMenuOpen}
+                onClick={() => setIsAccountMenuOpen((isOpen) => !isOpen)}
+              >
+                {currentUser ? `${currentUser.name}'s Account` : "Account"}
+              </button>
+              {isAccountMenuOpen && (
+                <ul className="header__menu" role="menu">
+                  <li role="none">
+                    <button
+                      type="button"
+                      className="header__logout-btn"
+                      role="menuitem"
+                      onClick={handleLogout}
+                    >
+                      Log out
+                    </button>
+                  </li>
+                </ul>
+              )}
+            </div>
+          </>
+        )}
       </nav>
     </header>
   );

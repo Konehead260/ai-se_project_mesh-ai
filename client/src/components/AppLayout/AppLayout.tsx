@@ -3,6 +3,7 @@ import Header from "../Header/Header";
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
+
 export default function AppLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 

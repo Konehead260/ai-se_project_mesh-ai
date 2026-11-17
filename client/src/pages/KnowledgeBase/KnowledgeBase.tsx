@@ -1,6 +1,10 @@
 import "./KnowledgeBase.css";
 import { useState, useEffect } from "react";
-import { getDocuments, type KnowledgeDoc } from "../../utils/api";
+import {
+  getDocuments,
+  type KnowledgeDoc,
+  uploadDocument,
+} from "../../utils/api";
 import UploadArea from "../../components/UploadArea/UploadArea";
 import xIcon from "../../assets/Vector.png";
 
@@ -8,6 +12,7 @@ export default function KnowledgeBase() {
   const [documents, setDocuments] = useState<KnowledgeDoc[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -24,15 +29,23 @@ export default function KnowledgeBase() {
     load();
   }, []);
 
-  const handleFileSelect = (file: File) => {
-    const newDoc: KnowledgeDoc = {
-      _id: Date.now().toString(),
-      title: file.name,
-      fileName: file.name,
-      userId: "local",
-      createdAt: new Date().toISOString(),
-    };
-    setDocuments((currentDocuments) => [newDoc, ...currentDocuments]);
+  const handleFileSelect = async (file: File) => {
+    setIsUploading(true);
+    try {
+      const res = await uploadDocument(file);
+      if (res.data) {
+        const newDocument = res.data;
+        setDocuments((prev) => [...prev, newDocument]);
+      }
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while uploading the file.",
+      );
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -41,7 +54,7 @@ export default function KnowledgeBase() {
 
       <section className="knowledge-base__content">
         <p>Upload documents (PDF)</p>
-        <UploadArea onFileSelect={handleFileSelect} />
+        <UploadArea onFileSelect={handleFileSelect} isUploading={isUploading} />
       </section>
 
       <section className="library" aria-label="Uploaded documents">
@@ -72,9 +85,6 @@ export default function KnowledgeBase() {
           ))}
       </section>
 
-      <button className="save-btn" type="button">
-        Save
-      </button>
     </main>
   );
 }
