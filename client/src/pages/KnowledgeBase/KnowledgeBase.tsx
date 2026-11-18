@@ -1,6 +1,7 @@
 import "./KnowledgeBase.css";
 import { useState, useEffect } from "react";
 import {
+  deleteDocument,
   getDocuments,
   type KnowledgeDoc,
   uploadDocument,
@@ -13,6 +14,8 @@ export default function KnowledgeBase() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -48,6 +51,21 @@ export default function KnowledgeBase() {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    setDeleteError(null);
+    setIsDeleting(true);
+    try {
+      await deleteDocument(id);
+      setDocuments((current) => current.filter((doc) => doc._id !== id));
+    } catch (error) {
+      setDeleteError(
+        error instanceof Error ? error.message : "Failed to delete document.",
+      );
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <main className="knowledge-base__page">
       <h1 className="knowledge-base__header">Manage Your Knowledge Base</h1>
@@ -64,6 +82,11 @@ export default function KnowledgeBase() {
             {error}
           </p>
         )}
+        {deleteError && (
+          <p className="knowledge-base__status" role="alert">
+            {deleteError}
+          </p>
+        )}
         {!isLoading && !error && documents.length === 0 && (
           <p className="knowledge-base__status">No documents yet.</p>
         )}
@@ -77,6 +100,8 @@ export default function KnowledgeBase() {
                   className="file-upload__remove"
                   type="button"
                   aria-label={`Remove ${doc.fileName}`}
+                  disabled={isDeleting}
+                  onClick={() => void handleDelete(doc._id)}
                 >
                   <img src={xIcon} alt="" />
                 </button>

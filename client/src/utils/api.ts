@@ -38,6 +38,10 @@ async function request<T>(
     throw new Error(body?.error?.message || "Request failed");
     }
 
+    if (res.status === 204) {
+      return { success: true, data: null, error: null };
+    }
+
     return res.json();
 }
 
@@ -72,6 +76,12 @@ export type ApiResponse<T> = {
 
 export const getDocuments = (): Promise<ApiResponse<KnowledgeDoc[]>> => {
   return request<KnowledgeDoc[]>("/documents");
+};
+
+export const deleteDocument = (id: string): Promise<ApiResponse<null>> => {
+  return request<null>(`/documents/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
 };
 
 export const getChats = async (): Promise<ApiResponse<Chat[]>> => {
